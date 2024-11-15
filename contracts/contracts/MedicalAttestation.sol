@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@sign-protocol/contracts/interfaces/IAttestationHook.sol";
+import { ISPHook } from "@ethsign/sign-protocol-evm/src/interfaces/ISPHook.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract MedicalAttestation is IAttestationHook, AccessControl {
+contract MedicalAttestation is ISPHook, AccessControl {
+    
     bytes32 public constant MEDICAL_PROFESSIONAL = keccak256("MEDICAL_PROFESSIONAL");
     bytes32 public constant RESEARCHER = keccak256("RESEARCHER");
     
