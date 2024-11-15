@@ -1,3 +1,4 @@
+"use client";
 import { WelcomeContent } from "./components/WelcomeContent";
 import { Login } from "./components/Login";
 import { MedicalResearch } from "./components/MedicalResearch";

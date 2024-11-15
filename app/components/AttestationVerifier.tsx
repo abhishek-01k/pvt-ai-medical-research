@@ -4,6 +4,8 @@ import { type FC, useState } from "react";
 import { AttestationService } from "../services/attestation";
 import { useNillion } from "@nillion/client-react-hooks";
 import { SYMPTOMS_BITMAP } from "../types/medical";
+import { getEthersProvider } from "../../config/wagmi-config";
+import { wagmiConfig } from "../../config/wagmi-config";
 
 export const AttestationVerifier: FC<{
   onVerifiedData: (data: any) => void;
@@ -12,12 +14,14 @@ export const AttestationVerifier: FC<{
   const [isVerifying, setIsVerifying] = useState(false);
   const { client } = useNillion();
 
+  const provider = getEthersProvider(wagmiConfig);
+
   const handleVerification = async () => {
     setIsVerifying(true);
     try {
       const service = new AttestationService(
         process.env.NEXT_PUBLIC_MEDICAL_ATTESTATION_CONTRACT!,
-        provider
+        provider!
       );
 
       const result = await service.verifyAttestation(attestationId);

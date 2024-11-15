@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, FC } from 'react';
 import { AttestationService } from '../services/attestation';
 import { useWalletClient } from 'wagmi';

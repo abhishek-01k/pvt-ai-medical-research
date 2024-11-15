@@ -1,3 +1,4 @@
+"use client";
 import { FC, useState } from 'react';
 import { AttestationService } from '../services/attestation';
 import { SYMPTOMS_BITMAP, SIDE_EFFECTS_BITMAP, MEDICATION_RESPONSE } from '../types/medical';

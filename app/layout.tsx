@@ -5,8 +5,8 @@ import Header from "./components/Header";
 import Provider from "./Provider";
 
 export const metadata: Metadata = {
-  title: "Create Nillion App",
-  description: "Quickstart a Nillion fullstack app",
+  title: "Pvt Medical Research",
+  description: "Pvt Medical Research with Signed Attestations",
 };
 
 export default function RootLayout({
