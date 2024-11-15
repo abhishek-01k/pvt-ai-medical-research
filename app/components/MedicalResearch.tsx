@@ -16,6 +16,7 @@ import {
   MEDICATION_RESPONSE, 
   bitmapToText 
 } from '../types/medical';
+import { AttestationVerifier } from '../components/AttestationVerifier';
 
 export const MedicalResearch: FC = () => {
   const { client } = useNillion();
@@ -35,7 +36,14 @@ export const MedicalResearch: FC = () => {
   const [ageGroupMin, setAgeGroupMin] = useState<string>("");
   const [ageGroupMax, setAgeGroupMax] = useState<string>("");
 
-  const handleCompute = () => {
+  const [verifiedAttestations, setVerifiedAttestations] = useState<any[]>([]);
+
+  const handleCompute = async () => {
+    if (verifiedAttestations.length === 0) {
+      alert("Please verify medical records first");
+      return;
+    }
+
     if (!programId) throw new Error("compute: program id required");
 
     const bindings = ProgramBindings.create(programId)
@@ -204,6 +212,14 @@ export const MedicalResearch: FC = () => {
           <p>Computation ID: {nilCompute.data}</p>
         )}
       </div>
+
+      <AttestationVerifier onVerifiedData={(data) => {
+        setVerifiedAttestations([...verifiedAttestations, data]);
+        // Auto-fill form fields from attestation
+        setSymptoms(data.symptoms);
+        setMedicationResponse(data.medicationResponse);
+        // etc...
+      }} />
     </div>
   );
 };

@@ -14,6 +14,7 @@ export const ComputeOutput: FC = () => {
   };
 
   let computeOutput = "idle";
+  
   if (nilComputeOutput.isSuccess) {
     computeOutput = JSON.stringify(nilComputeOutput.data, (key, value) => {
       if (typeof value === "bigint") {
