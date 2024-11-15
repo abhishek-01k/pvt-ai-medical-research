@@ -1,11 +1,11 @@
 import React from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 const Header = () => {
   return (
     <div className="flex justify-between items-center p-4">
       <div>NextJS</div>
-      <ConnectButton />
+      <DynamicWidget />
     </div>
   );
 };
