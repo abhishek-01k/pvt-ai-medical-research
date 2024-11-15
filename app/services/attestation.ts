@@ -7,6 +7,7 @@ export class AttestationService {
   private contract: MedicalAttestationContract;
   private signProtocol: SignProtocolClient;
 
+  //TODO: @abhishek fix this
   constructor(contractAddress: string, provider: ethers.providers.Provider) {
     this.contract = new ethers.Contract(
       contractAddress,
