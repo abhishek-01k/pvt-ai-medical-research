@@ -29,6 +29,8 @@ This platform uses Nillion's secure computation to process sensitive medical dat
 - **Researchers**: Aggregated trial matches and response scores
 - **Hospitals**: Safety monitoring and trial oversight
 
+
+
 ## Technical Implementation
 
 ### Core Components

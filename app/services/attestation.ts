@@ -1,10 +1,11 @@
 import { ethers } from 'ethers';
-import { SignProtocol } from '@sign/sdk';
+import { EvmChains, SignProtocolClient, SpMode } from '@ethsign/sp-sdk';
 import { MedicalAttestationContract } from '../types/contracts';
+import { MEDICAL_VISIT_SCHEMA } from '../types/attestationSchema';
 
 export class AttestationService {
   private contract: MedicalAttestationContract;
-  private signProtocol: SignProtocol;
+  private signProtocol: SignProtocolClient;
 
   constructor(contractAddress: string, provider: ethers.providers.Provider) {
     this.contract = new ethers.Contract(
@@ -13,8 +14,8 @@ export class AttestationService {
       provider
     ) as MedicalAttestationContract;
     
-    this.signProtocol = new SignProtocol({
-      // SIGN Protocol configuration
+    this.signProtocol = new SignProtocolClient(SpMode.OnChain, {
+      chain: EvmChains.baseSepolia,
     });
   }
 
@@ -48,5 +49,30 @@ export class AttestationService {
       };
     }
     return null;
+  }
+
+  async createMedicalVisitAttestation(
+    visitData: {
+      patientId: string;
+      symptoms: number;
+      diagnosis: string;
+      medicationPrescribed: string;
+      medicationResponse: number;
+      sideEffects: number;
+      treatmentDuration: number;
+      followUpRequired: boolean;
+    },
+    doctorAddress: string,
+    patientAddress: string
+  ) {
+    const attestation = await this.signProtocol.createAttestation({
+      schema: MEDICAL_VISIT_SCHEMA.name,
+      attestor: doctorAddress,
+      data: visitData,
+      hooks: [this.contract.address],
+      extraData: ethers.utils.defaultAbiCoder.encode(['address'], [patientAddress])
+    });
+
+    return attestation;
   }
 }
