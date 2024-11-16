@@ -1,62 +1,62 @@
 "use client";
-import { FC, useState } from 'react';
-import { AttestationService } from '../services/attestation';
-import { SYMPTOMS_BITMAP, SIDE_EFFECTS_BITMAP, MEDICATION_RESPONSE } from '../types/medical';
-import { useWalletClient } from 'wagmi';
-import { wagmiConfig } from '../../config/wagmi-config';
-import { getEthersProvider } from '../../config/wagmi-config';
+import { FC, useState } from "react";
+import { AttestationService } from "../services/attestation";
+import { SYMPTOMS_BITMAP } from "../types/medical";
+import { useWalletClient } from "wagmi";
+import { wagmiConfig } from "../../config/wagmi-config";
+import { getEthersProvider } from "../../config/wagmi-config";
 
 export const DoctorDashboard: FC = () => {
   const { data: walletClient } = useWalletClient();
   const [visitData, setVisitData] = useState({
-    patientId: '',
+    patientId: "",
     symptoms: 0,
-    diagnosis: '',
-    medicationPrescribed: '',
+    diagnosis: "",
+    medicationPrescribed: "",
     medicationResponse: 0,
     sideEffects: 0,
     treatmentDuration: 0,
-    followUpRequired: false
+    followUpRequired: false,
   });
 
   const handleCreateVisitRecord = async () => {
     if (!walletClient) return;
-    
+
     const provider = getEthersProvider(wagmiConfig);
-    
+
     const service = new AttestationService(
       process.env.NEXT_PUBLIC_MEDICAL_ATTESTATION_CONTRACT!,
-      provider!
+      provider!,
     );
 
     try {
       const attestation = await service.createMedicalVisitAttestation(
         visitData,
         walletClient.account.address,
-        visitData.patientId
+        visitData.patientId,
       );
-      
-      console.log('Visit record created:', attestation);
+
+      console.log("Visit record created:", attestation);
       // Reset form
       setVisitData({
-        patientId: '',
+        patientId: "",
         symptoms: 0,
-        diagnosis: '',
-        medicationPrescribed: '',
+        diagnosis: "",
+        medicationPrescribed: "",
         medicationResponse: 0,
         sideEffects: 0,
         treatmentDuration: 0,
-        followUpRequired: false
+        followUpRequired: false,
       });
     } catch (error) {
-      console.error('Failed to create visit record:', error);
+      console.error("Failed to create visit record:", error);
     }
   };
 
   return (
     <div className="p-6 max-w-2xl mx-auto bg-white rounded-lg shadow">
       <h2 className="text-2xl font-bold mb-6">Create Medical Visit Record</h2>
-      
+
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -67,7 +67,9 @@ export const DoctorDashboard: FC = () => {
             placeholder="0x..."
             className="w-full p-2 border rounded"
             value={visitData.patientId}
-            onChange={(e) => setVisitData({...visitData, patientId: e.target.value})}
+            onChange={(e) =>
+              setVisitData({ ...visitData, patientId: e.target.value })
+            }
           />
         </div>
 
@@ -80,9 +82,11 @@ export const DoctorDashboard: FC = () => {
             className="w-full p-2 border rounded"
             value={[visitData.symptoms.toString()]}
             onChange={(e) => {
-              const selected = Array.from(e.target.selectedOptions, option => Number(option.value));
+              const selected = Array.from(e.target.selectedOptions, (option) =>
+                Number(option.value),
+              );
               const bitmap = selected.reduce((acc, curr) => acc | curr, 0);
-              setVisitData({...visitData, symptoms: bitmap});
+              setVisitData({ ...visitData, symptoms: bitmap });
             }}
           >
             {Object.entries(SYMPTOMS_BITMAP).map(([symptom, value]) => (
@@ -100,7 +104,9 @@ export const DoctorDashboard: FC = () => {
           <textarea
             className="w-full p-2 border rounded"
             value={visitData.diagnosis}
-            onChange={(e) => setVisitData({...visitData, diagnosis: e.target.value})}
+            onChange={(e) =>
+              setVisitData({ ...visitData, diagnosis: e.target.value })
+            }
           />
         </div>
 
@@ -112,7 +118,12 @@ export const DoctorDashboard: FC = () => {
             type="text"
             className="w-full p-2 border rounded"
             value={visitData.medicationPrescribed}
-            onChange={(e) => setVisitData({...visitData, medicationPrescribed: e.target.value})}
+            onChange={(e) =>
+              setVisitData({
+                ...visitData,
+                medicationPrescribed: e.target.value,
+              })
+            }
           />
         </div>
 
@@ -124,7 +135,12 @@ export const DoctorDashboard: FC = () => {
             type="number"
             className="w-full p-2 border rounded"
             value={visitData.treatmentDuration}
-            onChange={(e) => setVisitData({...visitData, treatmentDuration: Number(e.target.value)})}
+            onChange={(e) =>
+              setVisitData({
+                ...visitData,
+                treatmentDuration: Number(e.target.value),
+              })
+            }
           />
         </div>
 
@@ -136,12 +152,14 @@ export const DoctorDashboard: FC = () => {
             type="checkbox"
             className="rounded border-gray-300"
             checked={visitData.followUpRequired}
-            onChange={(e) => setVisitData({...visitData, followUpRequired: e.target.checked})}
+            onChange={(e) =>
+              setVisitData({ ...visitData, followUpRequired: e.target.checked })
+            }
           />
         </div>
       </div>
 
-      <button 
+      <button
         className="mt-6 w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
         onClick={handleCreateVisitRecord}
         disabled={!walletClient}
