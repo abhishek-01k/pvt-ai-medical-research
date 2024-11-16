@@ -1,20 +1,20 @@
-import { ethers } from 'ethers';
-import { EvmChains, SignProtocolClient, SpMode } from '@ethsign/sp-sdk';
-import { MedicalAttestationContract } from '../types/contracts';
-import { MEDICAL_VISIT_SCHEMA } from '../types/attestationSchema';
+import { ethers } from "ethers";
+import { EvmChains, SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
+import { MedicalAttestationContract } from "../types/contracts";
 
 export class AttestationService {
   private contract: MedicalAttestationContract;
   private signProtocol: SignProtocolClient;
+  private schemaId = "0x42f";
 
   //TODO: @abhishek fix this
   constructor(contractAddress: string, provider: ethers.providers.Provider) {
     this.contract = new ethers.Contract(
       contractAddress,
       MedicalAttestationABI,
-      provider
+      provider,
     ) as MedicalAttestationContract;
-    
+
     this.signProtocol = new SignProtocolClient(SpMode.OnChain, {
       chain: EvmChains.baseSepolia,
     });
@@ -23,30 +23,35 @@ export class AttestationService {
   async createMedicalAttestation(
     patientData: {
       patientId: string;
+      visitTimestamp: number;
       diagnosis: string;
       symptoms: number;
       medicationResponse: number;
+      medicationPrescribed: string;
+      sideEffects: number;
+      treatmentDuration: number;
+      followUpRequired: boolean;
     },
-    attestor: string
+    address: `0x${string}`,
   ) {
     // Create attestation through SIGN Protocol
     const attestation = await this.signProtocol.createAttestation({
-      schema: "medical_record_v1",
-      attestor,
+      schemaId: this.schemaId,
       data: patientData,
-      hooks: [this.contract.address]
+      attester: address,
+      indexingValue: `${address}-${patientData.visitTimestamp}`,
     });
 
     return attestation;
   }
 
   async verifyAttestation(attestationId: string) {
-    const verification = await this.signProtocol.verifyAttestation(attestationId);
-    if (verification.isValid) {
-      const record = await this.contract.records(verification.schemaId);
+    const attestation = await this.signProtocol.getAttestation(attestationId);
+    if (attestation) {
+      const record = await this.contract.records(attestation.schemaId);
       return {
-        ...verification,
-        medicalRecord: record
+        ...attestation,
+        medicalRecord: record,
       };
     }
     return null;
@@ -62,16 +67,15 @@ export class AttestationService {
       sideEffects: number;
       treatmentDuration: number;
       followUpRequired: boolean;
+      visitTimestamp: number;
     },
-    doctorAddress: string,
-    patientAddress: string
+    doctorAddress: `0x${string}`,
   ) {
     const attestation = await this.signProtocol.createAttestation({
-      schema: MEDICAL_VISIT_SCHEMA.name,
-      attestor: doctorAddress,
+      schemaId: this.schemaId,
       data: visitData,
-      hooks: [this.contract.address],
-      extraData: ethers.utils.defaultAbiCoder.encode(['address'], [patientAddress])
+      attester: doctorAddress,
+      indexingValue: `${doctorAddress}-${visitData.visitTimestamp}`,
     });
 
     return attestation;
