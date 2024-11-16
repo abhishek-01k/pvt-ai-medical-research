@@ -1,12 +1,15 @@
 "use client";
 import React from "react";
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import WorldWidget from "./WorldWidget";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Header = () => {
   return (
     <div className="flex justify-between items-center p-4">
       <div>NextJS</div>
-      <DynamicWidget />
+      <WorldWidget />
+      {/* <DynamicWidget /> */}
+      <ConnectButton />
     </div>
   );
 };

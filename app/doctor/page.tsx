@@ -4,9 +4,7 @@ import { DoctorDashboard } from '../components/DoctorDashboard';
 
 const DoctorDashboardPage: FC = () => {
   return (
-    // <Layout>
-      <DoctorDashboard />
-    // </Layout>
+    <DoctorDashboard />
   );
 };
 

@@ -1,19 +1,19 @@
 import { ethers } from "ethers";
 import { EvmChains, SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
 import { MedicalAttestationContract } from "../types/contracts";
+import { MedicalAttestationABI } from "../../config/ABI";
 
 export class AttestationService {
   private contract: MedicalAttestationContract;
   private signProtocol: SignProtocolClient;
-  private schemaId = "0x42f";
+  private schemaId = "0x456";
 
-  //TODO: @abhishek fix this
-  constructor(contractAddress: string, provider: ethers.providers.Provider) {
+  constructor(contractAddress: string, signer: ethers.Signer) {
     this.contract = new ethers.Contract(
       contractAddress,
       MedicalAttestationABI,
-      provider,
-    ) as MedicalAttestationContract;
+      signer,
+    ) as unknown as MedicalAttestationContract;
 
     this.signProtocol = new SignProtocolClient(SpMode.OnChain, {
       chain: EvmChains.baseSepolia,
@@ -38,7 +38,6 @@ export class AttestationService {
     const attestation = await this.signProtocol.createAttestation({
       schemaId: this.schemaId,
       data: patientData,
-      attester: address,
       indexingValue: `${address}-${patientData.visitTimestamp}`,
     });
 
@@ -57,6 +56,12 @@ export class AttestationService {
     return null;
   }
 
+  async getSchema() {
+    const schema = await this.signProtocol.getSchema(this.schemaId);
+    console.log("Schema", schema);
+    return schema;
+  }
+
   async createMedicalVisitAttestation(
     visitData: {
       patientId: string;
@@ -71,13 +76,26 @@ export class AttestationService {
     },
     doctorAddress: `0x${string}`,
   ) {
+    console.log("Contract", this.contract);
+
     const attestation = await this.signProtocol.createAttestation({
       schemaId: this.schemaId,
       data: visitData,
-      attester: doctorAddress,
       indexingValue: `${doctorAddress}-${visitData.visitTimestamp}`,
     });
 
+    console.log("Attestaion >>>", attestation);
+
     return attestation;
+  }
+
+  async getPatientAttestations(address: string) {
+    if (address) {
+      const res = await this.contract.getPatientVisits(address);
+      console.log("Res", res);
+      return res;
+    } else {
+      return null;
+    }
   }
 }

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClientWrapper } from "./components/ClientWrapper";
-import Header from "./components/Header";
 import Provider from "./Provider";
+import { SiteHeader } from "./components/site-header";
+import { ThemeProvider } from "./components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Pvt Medical Research",
@@ -17,12 +18,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Provider>
-          <ClientWrapper>
-            <Header />
-            {children}
-          </ClientWrapper>
-        </Provider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Provider>
+            <ClientWrapper>
+              <SiteHeader />
+              {children}
+            </ClientWrapper>
+          </Provider>
+        </ThemeProvider>
       </body>
     </html>
   );
