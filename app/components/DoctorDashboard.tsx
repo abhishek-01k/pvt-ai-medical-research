@@ -29,7 +29,7 @@ export const DoctorDashboard: FC = () => {
   const handleCreateVisitRecord = async () => {
     if (!address) return;
 
-    console.log("Creating attestation", visitData)
+    console.log("Creating attestation", visitData);
 
     const signer = await getEthersSigner(wagmiConfig);
 
@@ -39,28 +39,38 @@ export const DoctorDashboard: FC = () => {
     );
 
     // Example data
-    const data = {
-      patientId:
-        "0xabc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc1",
-      visitTimestamp: 1731456000, // Future timestamp (Nov 12, 2024, 00:00:00 UTC)
-      symptoms: 3, // Represents an encoded or categorical value for symptoms
-      diagnosis: "Common Cold",
-      medicationPrescribed: "Paracetamol 500mg",
-      medicationResponse: 1, // Represents a response code, e.g., 1 = Good
-      sideEffects: 0, // Represents no side effects
-      treatmentDuration: 7, // 7 days
+    // const data = {
+    //   patientId:
+    //     "0xabc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc1",
+    //   visitTimestamp: 1731456000, // Future timestamp (Nov 12, 2024, 00:00:00 UTC)
+    //   symptoms: 3, // Represents an encoded or categorical value for symptoms
+    //   diagnosis: "Common Cold",
+    //   medicationPrescribed: "Paracetamol 500mg",
+    //   medicationResponse: 1, // Represents a response code, e.g., 1 = Good
+    //   sideEffects: 0, // Represents no side effects
+    //   treatmentDuration: 7, // 7 days
+    //   followUpRequired: true,
+    // };
+
+    const schema = await service.getSchema();
+    console.log("Schema >>>", schema);
+    // console.log("Data", data);
+
+    const patientData = {
+      patientId: "0x1234567890abcdef1234567890abcdef12345678",
+      visitTimestamp: 1697512800,
+      symptoms: 3,
+      diagnosis: "Influenza",
+      medicationPrescribed: "Antiviral",
+      medicationResponse: 1,
+      sideEffects: 2,
+      treatmentDuration: 7,
       followUpRequired: true,
     };
 
-    const schema = await service.getSchema()
-    console.log("Schema >>>", schema);
-    console.log("Data", data);
-
-
-
     try {
       const attestation = await service.createMedicalVisitAttestation(
-        visitData,
+        patientData,
         address,
       );
 
@@ -87,10 +97,9 @@ export const DoctorDashboard: FC = () => {
     if (data) {
       handleCreateVisitRecord();
     } else {
-      alert('Identity not verified, Please verify')
+      alert("Identity not verified, Please verify");
     }
-
-  }
+  };
 
   return (
     <Card className="p-6 max-w-2xl mx-auto flex flex-col justify-center rounded-lg shadow mt-12">
@@ -113,28 +122,40 @@ export const DoctorDashboard: FC = () => {
         </div>
 
         <div>
-          <Label className="block text-sm font-medium mb-1">
-            Symptoms
-          </Label>
+          <Label className="block text-sm font-medium mb-1">Symptoms</Label>
           {/* Container to display selected symptoms */}
           <div className="mb-2">
-            {Object.entries(SYMPTOMS_BITMAP).filter(([_, value]) =>
-              (visitData.symptoms & value) === value // Check if the symptom is selected
-            ).map(([symptom]) => (
-              <span key={symptom} className="inline-block bg-blue-200 text-blue-800 rounded-full px-2 py-1 text-sm mr-2">
-                {symptom}
-              </span>
-            ))}
+            {Object.entries(SYMPTOMS_BITMAP)
+              .filter(
+                ([_, value]) => (visitData.symptoms & value) === value, // Check if the symptom is selected
+              )
+              .map(([symptom]) => (
+                <span
+                  key={symptom}
+                  className="inline-block bg-blue-200 text-blue-800 rounded-full px-2 py-1 text-sm mr-2"
+                >
+                  {symptom}
+                </span>
+              ))}
           </div>
           <select
             multiple
             className="w-full p-2 border rounded"
-            value={Array.from(Object.entries(SYMPTOMS_BITMAP).filter(([_, value]) =>
-              (visitData.symptoms & value) === value // Check if the symptom is selected
-            ).map(([_, value]) => value.toString()))} // Convert selected values to strings
+            value={Array.from(
+              Object.entries(SYMPTOMS_BITMAP)
+                .filter(
+                  ([_, value]) => (visitData.symptoms & value) === value, // Check if the symptom is selected
+                )
+                .map(([_, value]) => value.toString()),
+            )} // Convert selected values to strings
             onChange={(e) => {
-              const selected = Array.from(e.target.selectedOptions, (option) => Number(option.value));
-              const newSymptoms = selected.reduce((acc, curr) => acc ^ curr, visitData.symptoms); // Toggle selection
+              const selected = Array.from(e.target.selectedOptions, (option) =>
+                Number(option.value),
+              );
+              const newSymptoms = selected.reduce(
+                (acc, curr) => acc ^ curr,
+                visitData.symptoms,
+              ); // Toggle selection
               setVisitData({ ...visitData, symptoms: newSymptoms });
             }}
           >
@@ -147,9 +168,7 @@ export const DoctorDashboard: FC = () => {
         </div>
 
         <div>
-          <Label className="block text-sm font-medium mb-1">
-            Diagnosis
-          </Label>
+          <Label className="block text-sm font-medium mb-1">Diagnosis</Label>
           <Textarea
             className="w-full p-2 border rounded"
             value={visitData.diagnosis}
@@ -198,13 +217,15 @@ export const DoctorDashboard: FC = () => {
             className="rounded border-gray-300"
             checked={visitData.followUpRequired}
             onCheckedChange={(checked) => {
-              setVisitData({ ...visitData, followUpRequired: checked as boolean })
+              setVisitData({
+                ...visitData,
+                followUpRequired: checked as boolean,
+              });
             }}
           />
           <Label className="block text-sm font-medium  mb-1">
             Follow-up Required
           </Label>
-
         </div>
       </div>
 
@@ -217,8 +238,10 @@ export const DoctorDashboard: FC = () => {
           {!address ? "Connect Wallet" : "Create Visit Record"}
         </Button>
 
-        <WorldcoinVerification title="Verify Identity" onSuccess={handleVerifyDoc} />
-
+        <WorldcoinVerification
+          title="Verify Identity"
+          onSuccess={handleVerifyDoc}
+        />
       </div>
     </Card>
   );
