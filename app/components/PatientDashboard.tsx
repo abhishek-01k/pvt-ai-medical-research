@@ -6,7 +6,6 @@ import { MedicalResearch } from "./MedicalResearch";
 import { bitmapToText, SYMPTOMS_BITMAP } from "../types/medical";
 import { getEthersSigner, wagmiConfig } from "../../config/wagmi-config";
 import { getEthersProvider } from "../../config/wagmi-config";
-import { Button } from "./ui/button";
 
 interface Attestation {
   id: string;
@@ -55,7 +54,7 @@ export const PatientDashboard: FC = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <Button variant="outline">helo world</Button>
+      s{" "}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Patient Dashboard</h2>
         {!address ? (
@@ -73,7 +72,6 @@ export const PatientDashboard: FC = () => {
           </button>
         )}
       </div>
-
       <div className="mb-6">
         <h3 className="text-xl font-semibold mb-4">Medical Records</h3>
         {isLoading ? (
@@ -132,7 +130,6 @@ export const PatientDashboard: FC = () => {
           </div>
         )}
       </div>
-
       {showResearchForm && (
         <div className="border-t pt-6">
           <MedicalResearch />

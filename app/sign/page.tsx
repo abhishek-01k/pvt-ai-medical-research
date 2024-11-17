@@ -9,7 +9,7 @@ const SignPage = () => {
   });
 
   const { address } = useAccount();
-  const schemaId = "0x456";
+  const schemaId = "0x4e6";
 
   const handleGetSchema = async () => {
     try {
@@ -22,23 +22,43 @@ const SignPage = () => {
 
   const handleCreateAttestation = async () => {
     const timestamp = new Date().getTime();
-    const data = {
-      patientId:
-        "0xabc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc1",
-      visitTimestamp: 1731456000, // Future timestamp (Nov 12, 2024, 00:00:00 UTC)
-      symptoms: 3, // Represents an encoded or categorical value for symptoms
-      diagnosis: "Common Cold",
-      medicationPrescribed: "Paracetamol 500mg",
-      medicationResponse: 1, // Represents a response code, e.g., 1 = Good
-      sideEffects: 0, // Represents no side effects
-      treatmentDuration: 7, // 7 days
-      followUpRequired: true,
-    };
+    // const data = {
+    //   patientId:
+    //     "0xabc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc1",
+    //   visitTimestamp: 1731456000, // Future timestamp (Nov 12, 2024, 00:00:00 UTC)
+    //   symptoms: 3, // Represents an encoded or categorical value for symptoms
+    //   diagnosis: "Common Cold",
+    //   medicationPrescribed: "Paracetamol 500mg",
+    //   medicationResponse: 1, // Represents a response code, e.g., 1 = Good
+    //   sideEffects: 0, // Represents no side effects
+    //   treatmentDuration: 7, // 7 days
+    //   followUpRequired: true,
+    // };
+
+    const patientData = {
+      patientId: "0x1234567890abcdef1234567890abcdef12345678",
+      visitTimestamp: 1697512800,
+      symptoms: 3,
+      diagnosis: "Influenza",
+      medicationPrescribed: "Antiviral",
+      medicationResponse: 1,
+      sideEffects: 2,
+      treatmentDuration: 7,
+      followUpRequired: true
+    }
+
+    // const data = {
+    //   poolId: 2,
+    //   walletAddress: address,
+    //   cycle: 1,
+    //   reason: '',
+    //   totalMembers: 5,
+    // }
+
 
     const attestationId = await client.createAttestation({
-      schemaId,
-      data,
-      attester: "0x9452BCAf507CD6547574b78B810a723d8868C85a",
+      schemaId: schemaId,
+      data: patientData,
       indexingValue: `xxx`,
     });
     console.log("attestationId", attestationId);

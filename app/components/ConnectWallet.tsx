@@ -1,12 +1,10 @@
 import React from 'react';
-// import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { DynamicWidget } from '@dynamic-labs/sdk-react-core';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const ConnectWallet = () => {
     return (
         <div>
-            {/* <ConnectButton /> */}
-            <DynamicWidget />
+            <ConnectButton />
 
         </div>
     );

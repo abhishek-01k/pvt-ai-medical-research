@@ -20,11 +20,12 @@ import { createConfig } from "wagmi";
 import { providers } from "ethers";
 
 export const wagmiConfig = createConfig({
-  chains: [baseSepolia],
+  chains: [baseSepolia, sepolia],
   transports: {
     [baseSepolia.id]: http(
       "https://base-sepolia.g.alchemy.com/v2/tKFaHEflsPW6mKNEs0gGncUzSgjpwnnd",
     ),
+    [sepolia.id]: http(),
   },
 });
 

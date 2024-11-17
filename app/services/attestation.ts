@@ -6,7 +6,7 @@ import { MedicalAttestationABI } from "../../config/ABI";
 export class AttestationService {
   private contract: MedicalAttestationContract;
   private signProtocol: SignProtocolClient;
-  private schemaId = "0x456";
+  private schemaId = process.env.NEXT_PUBLIC_SCHEMA_ID!;
 
   constructor(contractAddress: string, signer: ethers.Signer) {
     this.contract = new ethers.Contract(
