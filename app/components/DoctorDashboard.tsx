@@ -56,6 +56,7 @@ export const DoctorDashboard: FC = () => {
     console.log("Schema >>>", schema);
     // console.log("Data", data);
 
+    //Example data schema
     const patientData = {
       patientId: "0x1234567890abcdef1234567890abcdef12345678",
       visitTimestamp: 1697512800,

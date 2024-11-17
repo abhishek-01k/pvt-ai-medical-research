@@ -5,11 +5,11 @@ import { useAccount } from "wagmi";
 
 const SignPage = () => {
   const client = new SignProtocolClient(SpMode.OnChain, {
-    chain: EvmChains.baseSepolia,
+    chain: EvmChains.sepolia,
   });
 
   const { address } = useAccount();
-  const schemaId = "0x4e6";
+  const schemaId = "0x31f";
 
   const handleGetSchema = async () => {
     try {
@@ -44,8 +44,8 @@ const SignPage = () => {
       medicationResponse: 1,
       sideEffects: 2,
       treatmentDuration: 7,
-      followUpRequired: true
-    }
+      followUpRequired: true,
+    };
 
     // const data = {
     //   poolId: 2,
@@ -54,7 +54,6 @@ const SignPage = () => {
     //   reason: '',
     //   totalMembers: 5,
     // }
-
 
     const attestationId = await client.createAttestation({
       schemaId: schemaId,

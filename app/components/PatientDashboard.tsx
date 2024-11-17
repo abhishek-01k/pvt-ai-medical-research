@@ -54,7 +54,6 @@ export const PatientDashboard: FC = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      s{" "}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Patient Dashboard</h2>
         {!address ? (
